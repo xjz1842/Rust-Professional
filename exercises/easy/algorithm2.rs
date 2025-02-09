@@ -73,7 +73,20 @@ impl<T> LinkedList<T> {
         }
     }
 	pub fn reverse(&mut self){
-		// TODO
+		  // 反转双向链表
+          // 定义 cur 和 prev 两个node
+          let mut pre = None;
+          let mut start = self.start;
+          while let Some(cur) = start {
+              let next: Option<NonNull<Node<T>>> =  unsafe { (*(cur.as_ptr())).next };
+              unsafe { (*cur.as_ptr()).prev = next };
+              // 当前node的next指针指向前一个指针
+              unsafe { (*cur.as_ptr()).next = pre };
+              pre = Some(cur);
+              start = next;
+          }
+        self.end = self.start;  
+        self.start = pre;
 	}
 }
 

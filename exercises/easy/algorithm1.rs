@@ -3,12 +3,10 @@
 	This problem requires you to merge two ordered singly linked lists into one ordered singly linked list
 */
 
-
 use std::fmt::{self, Display, Formatter};
 use std::ptr::NonNull;
-use std::vec::*;
 
-#[derive(Debug)]
+#[derive(PartialEq, Eq, Clone, Debug)]
 struct Node<T> {
     val: T,
     next: Option<NonNull<Node<T>>>,
@@ -51,7 +49,7 @@ impl<T> LinkedList<T> {
         match self.end {
             None => self.start = node_ptr,
             Some(end_ptr) => unsafe { (*end_ptr.as_ptr()).next = node_ptr },
-        }
+        }   
         self.end = node_ptr;
         self.length += 1;
     }
@@ -69,14 +67,35 @@ impl<T> LinkedList<T> {
             },
         }
     }
+
 	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
+    where T: Ord + Copy
 	{
-		//TODO
-		Self {
-            length: 0,
-            start: None,
-            end: None,
-        }
+        let mut result = LinkedList::new();
+        let mut list_a_start = list_a.start;
+        let mut list_b_start = list_b.start;
+        while let (Some(node1), Some(node2)) = (list_a_start, list_b_start ) {
+        
+        let node_1_v = unsafe { (*node1.as_ptr()).val };
+        let node_2_v =  unsafe { (*node2.as_ptr()).val };
+          if node_1_v <= node_2_v {
+            result.add(node_1_v);
+            list_a_start =  unsafe { (*node1.as_ptr()).next }  ;
+          } else {
+            result.add(node_2_v);
+            list_b_start =  unsafe { (*node2.as_ptr()).next }  ;
+          }
+     }
+     
+     while let Some(node1) = list_a_start {
+           result.add(unsafe { (*node1.as_ptr()).val });
+           list_a_start =  unsafe { (*node1.as_ptr()).next }  ;
+     }
+     while let Some(node2) = list_b_start {
+        result.add(unsafe { (*node2.as_ptr()).val });
+        list_b_start =  unsafe { (*node2.as_ptr()).next }  ;
+     }
+     result
 	}
 }
 
