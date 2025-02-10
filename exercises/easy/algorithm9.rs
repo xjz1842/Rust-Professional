@@ -7,6 +7,8 @@
 use std::cmp::Ord;
 use std::default::Default;
 
+
+
 pub struct Heap<T>
 where
     T: Default,
@@ -37,7 +39,22 @@ where
     }
 
     pub fn add(&mut self, value: T) {
-        //TODO
+        self.count += 1;
+        self.items.push(value);
+
+        let mut insert_idx = self.count;
+
+        let mut parent_idx = self.parent_idx(insert_idx);
+
+        while insert_idx > 1 {
+            let parent_idx = self.parent_idx(insert_idx);
+            if (self.comparator)(&self.items[insert_idx], &self.items[parent_idx]) {
+                 self.items.swap(parent_idx, insert_idx);
+                 insert_idx = parent_idx;  
+            } else {
+                break;
+            }
+        }
     }
 
     fn parent_idx(&self, idx: usize) -> usize {
@@ -57,8 +74,16 @@ where
     }
 
     fn smallest_child_idx(&self, idx: usize) -> usize {
-        //TODO
-		0
+        if !self.children_present(idx) {
+            return 0;
+        }
+		let left = self.left_child_idx(idx);
+        let right = self.right_child_idx(idx);
+        if right <= self.count && (self.comparator)(&self.items[right], &self.items[left]) {
+            right
+        } else {
+            left
+        }
     }
 }
 
@@ -84,8 +109,28 @@ where
     type Item = T;
 
     fn next(&mut self) -> Option<T> {
-        //TODO
-		None
+        if self.count == 0 {
+            return None;
+        }
+        self.items.swap(1, self.count);
+        let result = self.items.pop().unwrap();
+         //减1
+		self.count -= 1;
+        
+        if self.count > 1 {
+            let mut current_idx = 1;
+            while self.children_present(current_idx) {
+                let child_idx = self.smallest_child_idx(current_idx);
+
+                if (self.comparator)(&self.items[child_idx], &self.items[current_idx]) {
+                    self.items.swap(current_idx, child_idx);
+                    current_idx = child_idx;
+                } else {
+                    break;
+                }
+            }
+        }
+        Some(result)
     }
 }
 
