@@ -1,6 +1,6 @@
 /*
 	graph
-	This problem requires you to implement a basic graph functio
+	This problem requires you to implement a basic graph function
 */
 
 
@@ -29,7 +29,12 @@ impl Graph for UndirectedGraph {
         &self.adjacency_table
     }
     fn add_edge(&mut self, edge: (&str, &str, i32)) {
-        //TODO
+      let v =   self.adjacency_table.entry(edge.0.to_string()).or_insert(vec![(edge.1.to_string(),
+    edge.2)]);
+       v.push((edge.1.to_string(),edge.2));
+      let v1 =  self.adjacency_table.entry(edge.1.to_string()).or_insert(vec![(edge.0.to_string(),
+    edge.2)]);
+       v1.push((edge.0.to_string(),edge.2));
     }
 }
 pub trait Graph {
@@ -65,7 +70,7 @@ mod test_undirected_graph {
     use super::UndirectedGraph;
     #[test]
     fn test_add_edge() {
-        let mut graph = UndirectedGraph::new();
+        let mut graph: UndirectedGraph = UndirectedGraph::new();
         graph.add_edge(("a", "b", 5));
         graph.add_edge(("b", "c", 10));
         graph.add_edge(("c", "a", 7));
