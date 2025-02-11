@@ -11,11 +11,27 @@
     Hint: You can start by sorting the intervals by their starting point and then merge them one by one.
 */
 
-use std::fmt::{self, Display, Formatter};
-
 pub fn merge_intervals(intervals: Vec<Vec<i32>>) -> Vec<Vec<i32>> {
     // TODO: Implement the logic to merge overlapping intervals
-    Vec::new() // Placeholder return value
+    let mut result: Vec<Vec<i32>> =  Vec::new();
+    let mut intervals =  intervals;
+    intervals.sort_by(|a,b| a[0].cmp(&b[0]));
+
+    for internal in intervals {
+        if  let Some(last) = result.last() {
+             if last[1] < internal[0] { 
+                result.push(internal);
+             } else {
+                let mut last = result.pop().unwrap();
+                //  last[1] >= internal[0]
+               last[1] = internal[1].max(last[1]);
+               result.push(last);
+             }
+        } else {
+            result.push(internal);
+        }
+    }
+    result
 }
 
 #[cfg(test)]
