@@ -25,6 +25,7 @@ pub fn rotate_matrix_90_degrees(matrix: &mut Vec<Vec<i32>>) {
         }
     }
     let n = row.max(col);
+    
     for i in 0..n {
         for j in 0..n - i - 1 {
             let temp = matrix[i][j];
