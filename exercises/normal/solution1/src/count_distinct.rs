@@ -1,3 +1,5 @@
+use std::collections::HashSet;
+
 pub fn new_count_distinct(input_str: &str) -> usize {
     let mut hash_set = HashSet::new();
 
